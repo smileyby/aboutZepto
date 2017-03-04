@@ -57,6 +57,33 @@ Zepto 使用中的一些注意点
 > 
 > 计算完高宽之后再回复，参见[ https://github.com/jquery/jquery/blob/master/src/css.js#L460]( https://github.com/jquery/jquery/blob/master/src/css.js#L460) 如果遇到这种情况，可以参考jQuery写一个类似的方法
 
+#### .prop() 方法的陷阱
+
+> 有次我要把一个文本框设置为制度，写了一行 <code>$('#text').prop('readonly', true)</code> 结果死活不工作，找了半天才发现，正确的写法是这样 <code>$('#text').prop('readOnly', true)</code>, 如果你居然看不出两者的差别，那么悄悄的提示你：注意大小写！
+> 
+> 翻了一下先关文档，原来只读属性的正确拼写确实是 readOnly ，可是在jQuery里面上一段代码却能正常工作于是到jQuery源码里面一找发现，还有这么一段。
+> [https://github.com/jquery/jquery/blob/master/src/attributes.js#L466](https://github.com/jquery/jquery/blob/master/src/attributes.js#L466)
+
+```js
+	
+	jQuery.each([
+	    "tabIndex",
+	    "readOnly",
+	    "maxLength",
+	    "cellSpacing",
+	    "cellPadding",
+	    "rowSpan",
+	    "colSpan",
+	    "useMap",
+	    "frameBorder",
+	    "contentEditable"
+	], function() {
+	    jQuery.propFix[ this.toLowerCase() ] = this;
+	});
+
+```
+> 从这里也能看到，jQuery的成熟度真是难以超越，因为它把我们惯坏了..
+
 ####　.show()的动画效果
 
 > 如果没有fx_methods模块的话，.show()方法不支持动画的，不过有了这个模块的话，动画的支持还是有点小问题，比如：
